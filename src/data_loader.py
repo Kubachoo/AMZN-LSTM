@@ -4,7 +4,7 @@ import numpy as np
 
 
 def get_stock_data(ticker, start, end):
+    # This downloads the historical data of the stock
     df = yf.download(ticker, start=start, end=end) 
-    df = df[['Close']].dropna()
     return df
 
