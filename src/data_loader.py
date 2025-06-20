@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
+from sklearn.preprocessing import MinMaxScaler
 
 # Downloads the historical data of a given stock ticker within it's desired range
 def get_stock_data(ticker, start, end):
@@ -10,7 +11,17 @@ def get_stock_data(ticker, start, end):
     return df
 
 # Preprocess' and scales pricing for LSTM model
-def price_scaler():
+def price_scaler(info):
+    df = info
+    scaler = MinMaxScaler()
+    closingPrice = df['Close'].values
+    print(scaler.fit(closingPrice))
+    MinMaxScaler()
+    print(scaler.data_max_)
+    print(scaler.transform(closingPrice))
+
+
+
     
 
 
