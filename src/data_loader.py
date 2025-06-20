@@ -14,14 +14,10 @@ def get_stock_data(ticker, start, end):
 def price_scaler(info):
     df = info
     scaler = MinMaxScaler()
-    closingPrice = df['Close'].values
-    print(scaler.fit(closingPrice))
+    importantValues = df[['Close','Open','Volume']].values
+    print(scaler.fit(importantValues))
     MinMaxScaler()
     print(scaler.data_max_)
-    print(scaler.transform(closingPrice))
-
-
-
-    
+    print(scaler.transform(importantValues))
 
 
