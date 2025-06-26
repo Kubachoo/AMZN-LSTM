@@ -1,5 +1,5 @@
 from src.data_loader import get_stock_data 
-from src.util import price_scaler, create_sequences
+from src.util import price_scaler, create_sequences 
 from pathlib import Path
 from src.visualize import visualizeData
 def main():
@@ -17,10 +17,11 @@ def main():
     # Visualizes CSV file in order to spot outliers
     visualizeData(filepath)
     # This scales the data within the range of (0,1) 
-    price_scaler(stock_data)
+    scaled_data,scaler = price_scaler(stock_data)
     
-    create_sequences(stock_data,60)
+    create_sequences(scaled_data,60)
 
+    
 if __name__ == "__main__":
     main()
  
