@@ -2,6 +2,8 @@ from src.data_loader import get_stock_data
 from src.util import price_scaler, create_sequences 
 from pathlib import Path
 from src.visualize import visualizeData
+from src.model import train_model
+
 def main():
     # Data is in the format: ticker,start date(YYYY-MM-DD),end(YYYY-MM-DD)
     stock_data = get_stock_data('AMZN','2019-05-14','2024-05-14')
@@ -21,7 +23,7 @@ def main():
     # This function creates the time sequences used for forecasting    
     X_train, y_train = create_sequences(scaled_data,500)
     X_test, y_test = create_sequences(scaled_data,500)
-    
+    train_model()     
     
 if __name__ == "__main__":
     main()
