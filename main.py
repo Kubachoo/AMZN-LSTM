@@ -18,8 +18,8 @@ def main():
     visualizeData(filepath)
     # This scales the data within the range of (0,1) 
     scaled_data,scaler = price_scaler(stock_data)
-    
-    create_sequences(scaled_data,60)
+    # This function creates the time sequences used for forecasting    
+    create_sequences(scaled_data,500)
 
     
 if __name__ == "__main__":
