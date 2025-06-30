@@ -21,8 +21,8 @@ def main():
     # This scales the data within the range of (0,1) 
     scaled_data,scaler = price_scaler(stock_data)
     # This function creates the time sequences used for forecasting    
-    X_train, y_train = create_sequences(scaled_data,500)
-    X_test, y_test = create_sequences(scaled_data,500)
+    X_train, y_train = create_sequences(scaled_data,50)
+    X_test, y_test = create_sequences(scaled_data,50)
     train_model()     
     
 if __name__ == "__main__":

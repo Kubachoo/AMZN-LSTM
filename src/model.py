@@ -10,7 +10,7 @@ def train_model():
     ]) 
     
     model.compile(optimizer='adam',loss='mse')
-    model.fit(X_train, y_train, epochs=100,batch_size=32,verbose=1)
+    model.fit(X_train, y_train, epochs=20,batch_size=32,verbose=1)
 
     train_predictions = model.predict(X_train)
     test_predictions = model.predict(X_test)
