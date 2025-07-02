@@ -45,6 +45,14 @@ def main():
                   loss="mae", 
                   metrics=[keras.metrics.RootMeanSquaredError()])
 
+    training = model.fit(X_train, y_train, epochs=20, batch_size=32)
+
+    predictions = model.predict(X_test)
+    # Transform scaled predictions back to unscaled numbers
+    predictions = scaler.inverse_transform(predictions)
+    
+    
+
 if __name__ == "__main__":
     main()
  
