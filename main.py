@@ -2,9 +2,8 @@ from src.data_loader import get_stock_data
 from src.util import price_scaler, create_sequences 
 from pathlib import Path
 from src.visualize import visualizeData
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
-import matplotlib.pyplot as plt
+from tensorflow import keras
+
 
 def main():
     # Data is in the format: ticker,start date(YYYY-MM-DD),end(YYYY-MM-DD)
@@ -28,21 +27,23 @@ def main():
 
 
     # Model training   
-    model = Sequential([
-        LSTM(60,activation='relu', input_shape=(50,1)),
-        Dense(1)
-    ]) 
-    model.compile(optimizer='adam',loss='mse')
-    model.fit(X_train, y_train, epochs=20,batch_size=32,verbose=1)
+    model = keras.models.Sequential()
+    model.add(keras.layers.LSTM(64, return_sequences=True,input_shape=(X_train.shape[1],1)))
+    model.add(keras.layers.LSTM(64, return_sequences=False))
 
-    train_predictions = model.predict(X_train)
-    test_predictions = model.predict(X_test)
+    # Dense layer
+    model.add(keras.layers.Dense(128, activation="relu"))
 
-    train_predictions = scaler.inverse_transform(train_predictions)
-    test_predictions = scaler.inverse_transform(test_predictions)
+    # Dropout layer
+    model.add(keras.layers.Dropout(0.5))
     
-    plt.figure(figsize=(10,6))
-    
+    # Dense layer
+    model.add(keras.layers.Dense(1))
+
+    model.summary()
+    model.compile(optimizer="adam",
+                  loss="mae", 
+                  metrics=[keras.metrics.RootMeanSquaredError()])
 
 if __name__ == "__main__":
     main()
