@@ -28,7 +28,7 @@ def main():
 
     # Model training   
     model = keras.models.Sequential()
-    model.add(keras.layers.LSTM(64, return_sequences=True,input_shape=(X_train.shape[1],1)))
+    model.add(keras.layers.LSTM(64, return_sequences=True,input_shape=(X_train.shape[1],3)))
     model.add(keras.layers.LSTM(64, return_sequences=False))
 
     # Dense layer
@@ -44,17 +44,37 @@ def main():
     model.compile(optimizer="adam",
                   loss="mae", 
                   metrics=[keras.metrics.RootMeanSquaredError()])
-
+    
+    X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 3))
+    print("X_train shape before fit:", X_train.shape)
     training = model.fit(X_train, y_train, epochs=20, batch_size=32)
 
+
     X_test = np.array(X_test)
-    X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
+    X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],3))
 
     predictions = model.predict(X_test)
     # Transform scaled predictions back to unscaled numbers
     predictions = scaler.inverse_transform(predictions)
     
+    test = data[:scaled_data_len]
+    test = data[scaled_data_len:]
 
+    test = test.copy()
+
+    test['Predictions'] = predictions
+
+    # Plotting preictions
+    plt.figure(figsize=(12,8))
+
+    plt.plot(train['Date'],train['Close'], label="Train (Actual)", color='blue')
+    plt.plot(test['Date'],test['Close'], label="Test (Actual)", color='orange')
+    plt.plot(test['Date'],test['Close'], label="Predictions", color='red')
+    plt.title("AMZN Stock Prediction")
+    plt.xlabel("Date")
+    plt.ylabel("Close price")
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     main()
