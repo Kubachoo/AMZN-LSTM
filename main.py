@@ -3,7 +3,7 @@ from src.util import price_scaler, create_sequences
 from pathlib import Path
 from src.visualize import visualizeData
 from tensorflow import keras
-
+import numpy as np
 
 def main():
     # Data is in the format: ticker,start date(YYYY-MM-DD),end(YYYY-MM-DD)
@@ -24,7 +24,7 @@ def main():
     # This function creates the time sequences used for forecasting    
     X_train, y_train = create_sequences(scaled_data,50)
     X_test, y_test = create_sequences(scaled_data,50)
-
+     
 
     # Model training   
     model = keras.models.Sequential()
@@ -47,11 +47,14 @@ def main():
 
     training = model.fit(X_train, y_train, epochs=20, batch_size=32)
 
+    X_test = np.array(X_test)
+    X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
+
     predictions = model.predict(X_test)
     # Transform scaled predictions back to unscaled numbers
     predictions = scaler.inverse_transform(predictions)
     
-    
+
 
 if __name__ == "__main__":
     main()
