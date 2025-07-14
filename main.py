@@ -4,6 +4,7 @@ from pathlib import Path
 from src.visualize import visualizeData
 from tensorflow import keras
 import numpy as np
+import pandas as pd
 
 def main():
     # Data is in the format: ticker,start date(YYYY-MM-DD),end(YYYY-MM-DD)
@@ -24,6 +25,9 @@ def main():
     # This function creates the time sequences used for forecasting    
     X_train, y_train = create_sequences(scaled_data,50)
     X_test, y_test = create_sequences(scaled_data,50)
+
+    scaled_data_len = int(np.ceil(len(scaled_data) * 0.95))
+    #stock_data['Date'] = pd.to_datetime(stock_data['Date'])
      
 
     # Model training   
@@ -38,7 +42,7 @@ def main():
     model.add(keras.layers.Dropout(0.5))
     
     # Dense layer
-    model.add(keras.layers.Dense(1))
+    model.add(keras.layers.Dense(3))
 
     model.summary()
     model.compile(optimizer="adam",
@@ -55,10 +59,10 @@ def main():
 
     predictions = model.predict(X_test)
     # Transform scaled predictions back to unscaled numbers
-    predictions = scaler.inverse_transform(predictions)
+    predictions = scaler.inverse_transform(predictions) 
     
-    test = data[:scaled_data_len]
-    test = data[scaled_data_len:]
+    test = stock_data[:scaled_data_len]
+    test = stock_data[scaled_data_len:]
 
     test = test.copy()
 

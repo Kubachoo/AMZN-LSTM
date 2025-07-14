@@ -26,3 +26,5 @@ def create_sequences(df, window_size):
         input_value = df_as_np[i+window_size]
         y.append(input_value)
     return np.array(X), np.array(y)
+
+
