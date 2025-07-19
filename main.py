@@ -5,6 +5,7 @@ from src.visualize import visualizeData
 from tensorflow import keras
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def main():
     # Data is in the format: ticker,start date(YYYY-MM-DD),end(YYYY-MM-DD)
@@ -23,11 +24,13 @@ def main():
     # This scales the data within the range of (0,1) 
     scaled_data,scaler = price_scaler(stock_data)
     # This function creates the time sequences used for forecasting    
-    X_train, y_train = create_sequences(scaled_data,50)
-    X_test, y_test = create_sequences(scaled_data,50)
-
     scaled_data_len = int(np.ceil(len(scaled_data) * 0.95))
-    #stock_data['Date'] = pd.to_datetime(stock_data['Date'])
+
+    train_data = scaled_data[:scaled_data_len]
+    test_data = scaled_data[scaled_data_len - 50:]  # minus 50 for sequence window
+
+    X_train, y_train = create_sequences(train_data, 50)
+    X_test, y_test = create_sequences(test_data, 50)
      
 
     # Model training   
@@ -56,24 +59,32 @@ def main():
 
     X_test = np.array(X_test)
     X_test = np.reshape(X_test,(X_test.shape[0],X_test.shape[1],3))
-
-    predictions = model.predict(X_test)
-    # Transform scaled predictions back to unscaled numbers
-    predictions = scaler.inverse_transform(predictions) 
     
-    test = stock_data[:scaled_data_len]
+        
+    predictions = model.predict(X_test)
+
+
+    # Transform scaled predictions back to unscaled numbers
+    unscaled_predictions = scaler.inverse_transform(predictions)
+    predicted_close = unscaled_predictions[:, 1]
+    training_data_len = int(len(stock_data) * 0.8)
+ 
+    #test = stock_data[:scaled_data_len]
+    train = stock_data[:training_data_len]
+    train.reset_index(inplace=True)
+
     test = stock_data[scaled_data_len:]
-
-    test = test.copy()
-
-    test['Predictions'] = predictions
-
-    # Plotting preictions
+    test = test[-len(predictions):].copy()
+    test.reset_index(inplace=True)
+    test['Predicted_close'] = predicted_close
+    
+    #plot_predictions(test)
+     #Plotting preictions
     plt.figure(figsize=(12,8))
 
     plt.plot(train['Date'],train['Close'], label="Train (Actual)", color='blue')
     plt.plot(test['Date'],test['Close'], label="Test (Actual)", color='orange')
-    plt.plot(test['Date'],test['Close'], label="Predictions", color='red')
+    plt.plot(test['Date'],test['Predicted_close'], label="Predictions", color='red')
     plt.title("AMZN Stock Prediction")
     plt.xlabel("Date")
     plt.ylabel("Close price")
